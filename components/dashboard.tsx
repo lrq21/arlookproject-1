@@ -3,33 +3,37 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { BarChart3, Bell, ChevronDown, Compass, FlaskConical, Gamepad2, Home, Menu, Settings, Sparkles, Users, X } from 'lucide-react'
+import { Bell, ChevronDown, Compass, FlaskConical, Gamepad2, Home, Search, Settings, Sparkles, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const mainLinks = [
-  { label: 'Overview', href: '/', icon: Home },
-  { label: 'Explore', href: '/explore', icon: Compass },
-  { label: 'Developers', href: '/developers', icon: Users },
-  { label: 'Idea Researcher', href: '/research', icon: FlaskConical },
+const browseLinks = [
+  { label: 'Trending now', href: '/explore?tab=trending' },
+  { label: 'Rising fast', href: '/explore?tab=rising' },
+  { label: 'Legends', href: '/explore?tab=legends' },
 ]
 
 export function DashboardShell({ children, title, eyebrow = 'Overview' }: { children: React.ReactNode; title: string; eyebrow?: string }) {
   const pathname = usePathname()
-  const [open, setOpen] = useState(false)
-  const [exploreOpen, setExploreOpen] = useState(true)
-  return <div className="min-h-screen bg-[#fafafa] text-[#16151c]">
-    <aside className={cn('fixed inset-y-0 left-0 z-20 flex w-[246px] flex-col border-r border-[#e9e8ec] bg-white px-5 py-6 transition-transform lg:translate-x-0', open ? 'translate-x-0' : '-translate-x-full')}>
-      <div className="mb-10 flex items-center justify-between px-2"><Link href="/" className="flex items-center gap-2.5 text-[18px] font-semibold tracking-[-0.04em]"><span className="grid size-7 place-items-center rounded-[9px] bg-[#7565e8] text-white"><Sparkles className="size-4" /></span>Airlook</Link><button onClick={() => setOpen(false)} className="lg:hidden"><X className="size-4" /></button></div>
-      <nav className="flex flex-1 flex-col gap-1"><p className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#a4a1aa]">Main</p>{mainLinks.map(({ label, href, icon: Icon }) => <div key={href}><Link onClick={() => setOpen(false)} href={href} className={cn('flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-[#77747e] transition-colors hover:bg-[#f5f3ff] hover:text-[#5d50c7]', pathname === href && 'bg-[#f1efff] text-[#6152d4]')}><Icon className="size-[17px]" />{label}</Link>{label === 'Explore' && <><button onClick={() => setExploreOpen(!exploreOpen)} className="absolute ml-[205px] mt-[-30px] text-[#aaa7b0]"><ChevronDown className={cn('size-3.5 transition-transform', !exploreOpen && '-rotate-90')} /></button>{exploreOpen && <div className="ml-9 mt-1 flex flex-col gap-1 border-l border-[#e6e3f5] pl-3"><Link href="/explore?tab=trending" className="py-1 text-[12px] text-[#9996a0] hover:text-[#6152d4]">Trending now</Link><Link href="/explore?tab=rising" className="py-1 text-[12px] text-[#9996a0] hover:text-[#6152d4]">Rising fast</Link><Link href="/explore?tab=legends" className="py-1 text-[12px] text-[#9996a0] hover:text-[#6152d4]">Legends</Link></div>}</>}</div>)}</nav>
-      <div className="flex flex-col gap-1 border-t border-[#efedf1] pt-5"><Link href="/settings" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-[#77747e] hover:bg-[#f5f3ff]"><Settings className="size-[17px]" />Settings</Link><Link href="/notifications" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-[#77747e] hover:bg-[#f5f3ff]"><Bell className="size-[17px]" />Notifications<span className="ml-auto size-1.5 rounded-full bg-[#7565e8]" /></Link><div className="mt-6 flex items-center gap-3 px-2"><div className="grid size-8 place-items-center rounded-full bg-[#eeeaff] text-xs font-semibold text-[#7565e8]">JD</div><div><p className="text-xs font-semibold">Jordan Davis</p><p className="text-[10px] text-[#aaa7b0]">Creator workspace</p></div></div></div>
-    </aside>
-    {open && <button aria-label="Close menu" onClick={() => setOpen(false)} className="fixed inset-0 z-10 bg-black/10 lg:hidden" />}
-    <main className="lg:pl-[246px]"><header className="flex h-[76px] items-center justify-between border-b border-[#eeedf0] bg-white px-6 sm:px-10"><button onClick={() => setOpen(true)} className="lg:hidden"><Menu className="size-5" /></button><div className="hidden sm:block"><p className="text-[11px] font-medium uppercase tracking-[0.13em] text-[#aaa7b0]">{eyebrow}</p><h1 className="mt-1 text-[20px] font-semibold tracking-[-0.03em]">{title}</h1></div><div className="flex items-center gap-3 sm:ml-auto"><PeriodSelector /><div className="hidden h-7 w-px bg-[#eceaef] sm:block" /><span className="grid size-8 place-items-center rounded-full bg-[#eeeaff] text-xs font-semibold text-[#7565e8]">JD</span></div></header><div className="p-5 sm:p-8 lg:p-10">{children}</div></main>
+  const [browseOpen, setBrowseOpen] = useState(false)
+  const nav = [
+    { label: 'Home', href: '/', icon: Home },
+    { label: 'Browse', href: '/explore', icon: Compass, menu: true },
+    { label: 'Developers', href: '/developers', icon: Users },
+    { label: 'Idea Maker', href: '/research', icon: FlaskConical },
+  ]
+  return <div className="min-h-screen bg-[#050b18] text-white selection:bg-[#2c8dff]/30">
+    <div className="pointer-events-none fixed inset-0 overflow-hidden"><div className="absolute left-[-12%] top-[-18%] h-[620px] w-[620px] rounded-full bg-[#0b5dd7]/20 blur-[110px]" /><div className="absolute right-[-10%] top-[18%] h-[520px] w-[520px] rounded-full bg-[#5f2cff]/16 blur-[120px]" /><div className="absolute bottom-[-25%] left-[35%] h-[620px] w-[620px] rounded-full bg-[#0b75d8]/12 blur-[130px]" /></div>
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#050b18]/78 px-5 py-4 backdrop-blur-xl sm:px-8 lg:px-10">
+      <div className="mx-auto flex max-w-[1440px] items-center gap-6">
+        <Link href="/" className="group flex shrink-0 items-center gap-3"><span className="grid size-9 overflow-hidden rounded-xl border border-white/15 bg-black shadow-[0_0_25px_rgba(36,141,255,.28)]"><img src="/airlook-logo.jpg" alt="Airlook logo" className="size-full object-cover" /></span><span className="hidden text-[17px] font-semibold tracking-[-0.04em] sm:block">Airlook</span></Link>
+        <nav className="hidden items-center gap-1 md:flex">{nav.map(({ label, href, icon: Icon, menu }) => <div key={href} className="relative"><Link href={href} onClick={() => menu && setBrowseOpen(!browseOpen)} className={cn('flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-medium text-slate-400 transition hover:bg-white/8 hover:text-white', (pathname === href || (menu && pathname === '/explore')) && 'bg-white/10 text-white')}><Icon className="size-4" />{label}{menu && <ChevronDown className={cn('size-3 transition-transform', browseOpen && 'rotate-180')} />}</Link>{menu && browseOpen && <div className="absolute left-0 top-12 w-44 rounded-2xl border border-white/12 bg-[#101b30]/96 p-2 shadow-2xl backdrop-blur-xl">{browseLinks.map((item) => <Link key={item.href} href={item.href} onClick={() => setBrowseOpen(false)} className="block rounded-xl px-3 py-2.5 text-[12px] text-slate-300 transition hover:bg-[#1c5fb0]/30 hover:text-white">{item.label}</Link>)}</div>}</div>)}</nav>
+        <div className="ml-auto flex items-center gap-2"><div className="hidden items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-slate-400 lg:flex"><Search className="size-3.5" /><span className="text-[11px]">Search games</span><kbd className="ml-5 rounded border border-white/10 px-1.5 py-0.5 text-[9px] text-slate-500">⌘ K</kbd></div><Link href="/notifications" className="grid size-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white"><Bell className="size-4" /></Link><Link href="/settings" className="grid size-9 place-items-center rounded-xl border border-white/10 bg-white/5 text-slate-400 hover:text-white"><Settings className="size-4" /></Link><div className="ml-1 grid size-9 place-items-center rounded-full border border-[#2b8dff]/40 bg-[#12315e] text-xs font-semibold text-[#8cc6ff]">JD</div></div>
+      </div>
+    </header>
+    <main className="relative z-10 px-5 py-8 sm:px-8 lg:px-10"><div className="mx-auto max-w-[1440px]"><div className="mb-8 flex items-end justify-between"><div><p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#4a9cff]">{eyebrow}</p><h1 className="mt-2 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">{title}</h1></div><div className="hidden rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-[11px] text-slate-400 sm:block">Last updated <span className="text-slate-200">just now</span></div></div>{children}</div></main>
   </div>
 }
 
-function PeriodSelector() { const [period, setPeriod] = useState('7d'); return <div className="flex rounded-lg border border-[#e8e6eb] bg-white p-0.5 text-[11px] font-medium text-[#9996a0]">{['24h','7d','30d'].map(item => <button key={item} onClick={() => setPeriod(item)} className={cn('rounded-md px-2.5 py-1.5', period === item && 'bg-[#f1efff] text-[#6656d7]')}>{item}</button>)}</div> }
+export function StatCard({ label, value, detail, tone = 'purple' }: { label: string; value: string; detail: string; tone?: string }) { return <div className="rounded-2xl border border-white/10 bg-white/[.045] p-5 shadow-[0_16px_50px_rgba(0,0,0,.14)] backdrop-blur-sm"><div className="flex items-center justify-between"><p className="text-[12px] text-slate-400">{label}</p><span className={cn('rounded-full px-2 py-1 text-[10px] font-semibold', tone === 'green' ? 'bg-emerald-400/12 text-emerald-300' : 'bg-[#428fff]/12 text-[#8cc6ff]')}>{detail}</span></div><p className="mt-4 text-[27px] font-semibold tracking-[-0.05em] text-white">{value}</p><div className="mt-3 h-1 rounded-full bg-white/8"><div className={cn('h-full rounded-full', tone === 'green' ? 'w-[74%] bg-emerald-400' : 'w-[62%] bg-[#4b9eff]')} /></div></div> }
 
-export function StatCard({ label, value, detail, tone = 'purple' }: { label: string; value: string; detail: string; tone?: string }) { return <div className="rounded-2xl border border-[#ebe9ee] bg-white p-5 shadow-[0_2px_10px_rgba(32,27,55,0.02)]"><div className="flex items-center justify-between"><p className="text-[12px] text-[#96939d]">{label}</p><span className={cn('rounded-full px-2 py-1 text-[10px] font-semibold', tone === 'green' ? 'bg-[#e8f7ef] text-[#45a56f]' : 'bg-[#f0edff] text-[#7565e8]')}>{detail}</span></div><p className="mt-4 text-[25px] font-semibold tracking-[-0.05em]">{value}</p><div className="mt-3 h-1 rounded-full bg-[#f0eff3]"><div className={cn('h-full rounded-full', tone === 'green' ? 'w-[74%] bg-[#8cd4a7]' : 'w-[62%] bg-[#9a8ff0]')} /></div></div> }
-
-export function SectionTitle({ title, action }: { title: string; action?: React.ReactNode }) { return <div className="mb-5 flex items-center justify-between"><h2 className="text-[15px] font-semibold tracking-[-0.02em]">{title}</h2>{action}</div> }
+export function SectionTitle({ title, action }: { title: string; action?: React.ReactNode }) { return <div className="mb-5 flex items-center justify-between"><h2 className="text-[15px] font-semibold tracking-[-0.02em] text-white">{title}</h2>{action}</div> }
