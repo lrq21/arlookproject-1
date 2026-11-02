@@ -1,8 +1,56 @@
 import Link from 'next/link'
-import { ArrowUpRight, ChevronRight, MoreHorizontal } from 'lucide-react'
-import { chartSeries, games, genres, opportunities } from '@/data'
-import { DashboardShell, SectionTitle, StatCard } from '@/components/dashboard'
+import { ArrowUpRight, ChevronRight } from 'lucide-react'
+import { games, opportunities } from '@/data'
+import { DashboardShell, SectionTitle } from '@/components/dashboard'
+import { GlassCard, GlassLink } from '@/components/glass'
+import { AdvancedStats } from '@/components/advanced-stats'
 
-function AreaChart() { const points = chartSeries.map((v, i) => `${i * 5},${150 - v}`).join(' '); return <div className="relative h-[220px] w-full overflow-hidden"><div className="absolute inset-0 flex flex-col justify-between text-[10px] text-slate-400"><span>150K</span><span>100K</span><span>50K</span><span>0</span></div><svg className="absolute inset-0 ml-10 h-full w-[calc(100%-40px)]" viewBox="0 0 100 150" preserveAspectRatio="none"><defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#60a5fa" stopOpacity=".28" /><stop offset="1" stopColor="#60a5fa" stopOpacity="0" /></linearGradient></defs><path d={`M 0 150 L ${points} L 100 150 Z`} fill="url(#area)" /><polyline points={points} fill="none" stroke="#3b82f6" strokeWidth="1.4" vectorEffect="non-scaling-stroke" /></svg><div className="absolute bottom-0 left-10 right-0 flex justify-between border-t border-white/10 pt-3 text-[10px] text-slate-400"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div> }
-function Donut() { return <div className="relative size-[142px] rounded-full" style={{ background: 'conic-gradient(#3b82f6 0 32%, #06b6d4 32% 55%, #6366f1 55% 74%, #8b5cf6 74% 88%, #38bdf8 88% 100%)' }}><div className="absolute inset-[25px] grid place-items-center rounded-full bg-white/[.045] text-center"><b className="text-[19px]">1.8M</b><span className="text-[10px] text-slate-400">players</span></div></div> }
-export default function Page() { return <DashboardShell title="Good morning, Jordan"><div className="mb-7 flex items-end justify-between"><div><p className="text-sm text-slate-400">Here&apos;s what&apos;s happening across Roblox today.</p></div><Link href="/research" className="hidden items-center gap-2 rounded-lg bg-[#2563eb] px-4 py-2.5 text-xs font-semibold text-white shadow-[0_5px_12px_rgba(37,99,235,.4)] sm:flex">Research an idea <ArrowUpRight className="size-3.5" /></Link></div><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><StatCard label="Total players now" value="1.82M" detail="+12.4%" /><StatCard label="Top game today" value="Brookhaven" detail="640K" /><StatCard label="Rising games" value="148" detail="+23" tone="green" /><StatCard label="Market saturation" value="64 / 100" detail="Moderate" /></div><div className="mt-7 grid gap-5 xl:grid-cols-[1.7fr_1fr]"><div className="glass rounded-2xl border border-white/10 bg-white/[.045] p-6"><SectionTitle title="Concurrent players" action={<div className="flex gap-4 text-[11px] text-slate-400"><span className="flex items-center gap-1.5"><i className="size-2 rounded-full bg-[#2563eb]" />Brookhaven RP</span><span className="flex items-center gap-1.5"><i className="size-2 rounded-full bg-cyan-300" />Blox Fruits</span></div>} /><AreaChart /></div><div className="glass rounded-2xl border border-white/10 bg-white/[.045] p-6"><SectionTitle title="Players by genre" action={<MoreHorizontal className="size-4 text-slate-400" />} /><div className="flex items-center gap-6"><Donut /><div className="flex flex-col gap-3">{genres.map(g => <div key={g.label} className="flex items-center gap-2 text-[11px]"><i className="size-2 rounded-full" style={{ background: g.color }} /><span className="w-16 text-slate-400">{g.label}</span><b>{g.value}%</b></div>)}</div></div></div><div className="mt-7 grid gap-5 xl:grid-cols-[1.7fr_1fr]"><div className="glass rounded-2xl border border-white/10 bg-white/[.045] p-6"><SectionTitle title="Top games" action={<Link href="/explore" className="flex items-center gap-1 text-[11px] font-semibold text-[#60a5fa]">View all <ChevronRight className="size-3" /></Link>} /><div className="overflow-x-auto"><table className="w-full min-w-[590px] text-left text-[12px]"><thead className="border-b border-white/10 text-[10px] uppercase tracking-[.08em] text-slate-400"><tr><th className="pb-3 font-medium">Game</th><th className="pb-3 font-medium">Players now</th><th className="pb-3 font-medium">Peak</th><th className="pb-3 font-medium">Likes</th><th className="pb-3 font-medium">Updated</th></tr></thead><tbody>{games.slice(0, 4).map(game => <tr key={game.id} className="border-b border-white/5 last:border-0"><td className="py-3"><Link href={`/games/${game.id}`} className="flex items-center gap-3 font-semibold hover:text-[#60a5fa]"><span className="grid size-8 place-items-center rounded-lg text-[10px] font-bold" style={{ background: game.color }}>{game.name.slice(0,2).toUpperCase()}</span>{game.name}</Link></td><td className="py-3 font-medium">{game.players}</td><td className="py-3 text-slate-400">{game.peak}</td><td className="py-3 text-emerald-400">{game.likes}</td><td className="py-3 text-slate-400">{game.update}</td></tr>)}</tbody></table></div></div><div className="glass rounded-2xl border border-white/10 bg-white/[.045] p-6"><SectionTitle title="Opportunity signals" action={<span className="rounded-full bg-[#2563eb]/20 px-2 py-1 text-[10px] font-semibold text-[#60a5fa]">3 new</span>} /><div className="flex flex-col gap-3">{opportunities.map(item => <div key={item.title} className="rounded-xl bg-white/5 p-3.5"><div className="flex items-start justify-between gap-2"><p className="text-xs font-semibold">{item.title}</p><ArrowUpRight className="size-3.5 shrink-0 text-[#60a5fa]" /></div><p className="mt-1.5 text-[11px] leading-relaxed text-slate-400">{item.body}</p><Link href="/research" className="mt-3 block text-[11px] font-semibold text-[#60a5fa]">Research this →</Link></div>)}</div></div></div></div></DashboardShell> }
+export default function Page() {
+  return (
+    <DashboardShell title="Good morning, Jordan">
+      <div className="mb-7 flex items-end justify-between gap-4">
+        <p className="text-sm text-slate-300/80">Here&apos;s what&apos;s happening across Roblox today.</p>
+        <GlassLink href="/research" className="hidden sm:inline-flex">Research an idea <ArrowUpRight className="size-3.5" /></GlassLink>
+      </div>
+
+      <AdvancedStats />
+
+      <div className="mt-4 grid gap-4 xl:grid-cols-[1.7fr_1fr]">
+        <GlassCard i={8} className="p-6">
+          <SectionTitle title="Top games" action={<Link href="/explore" className="flex items-center gap-1 text-[11px] font-semibold text-[#c4b5fd]">View all <ChevronRight className="size-3" /></Link>} />
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[590px] text-left text-[12px]">
+              <thead className="border-b border-white/10 text-[10px] uppercase tracking-[.08em] text-slate-400">
+                <tr><th className="pb-3 font-medium">Game</th><th className="pb-3 font-medium">Players now</th><th className="pb-3 font-medium">Peak</th><th className="pb-3 font-medium">Likes</th><th className="pb-3 font-medium">Updated</th></tr>
+              </thead>
+              <tbody>
+                {games.slice(0, 4).map((game) => (
+                  <tr key={game.id} className="border-b border-white/5 transition hover:bg-white/5 last:border-0">
+                    <td className="py-3"><Link href={`/games/${game.id}`} className="flex items-center gap-3 font-semibold hover:text-[#c4b5fd]"><span className="grid size-8 place-items-center rounded-xl text-[10px] font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,.4)]" style={{ background: game.color }}>{game.name.slice(0, 2).toUpperCase()}</span>{game.name}</Link></td>
+                    <td className="py-3 font-medium">{game.players}</td>
+                    <td className="py-3 text-slate-400">{game.peak}</td>
+                    <td className="py-3 text-emerald-400">{game.likes}</td>
+                    <td className="py-3 text-slate-400">{game.update}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GlassCard>
+
+        <GlassCard i={9} className="p-6">
+          <SectionTitle title="Opportunity signals" action={<span className="rounded-full bg-violet-400/20 px-2 py-1 text-[10px] font-semibold text-violet-200">3 new</span>} />
+          <div className="flex flex-col gap-3">
+            {opportunities.map((item) => (
+              <div key={item.title} className="rounded-2xl bg-white/5 p-3.5 ring-1 ring-white/10 transition hover:bg-white/10">
+                <div className="flex items-start justify-between gap-2"><p className="text-xs font-semibold">{item.title}</p><ArrowUpRight className="size-3.5 shrink-0 text-[#c4b5fd]" /></div>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-slate-300/70">{item.body}</p>
+                <Link href="/research" className="mt-3 block text-[11px] font-semibold text-[#c4b5fd]">Research this →</Link>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </div>
+    </DashboardShell>
+  )
+}
